@@ -1,6 +1,7 @@
 package com.n3network.falloutterminalhacker.ui
 
 import android.Manifest
+import android.app.Activity
 import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
@@ -34,8 +35,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import com.n3network.falloutterminalhacker.camera.CameraPreview
 import com.n3network.falloutterminalhacker.ocr.EnglishDictionary
 import com.n3network.falloutterminalhacker.ocr.TextRecognizer
@@ -73,6 +77,8 @@ fun CameraScreen(onWordsCaptured: (List<String>) -> Unit) {
     DisposableEffect(recognizer) {
         onDispose { recognizer.close() }
     }
+
+    HideSystemBarsWhileVisible()
 
     Box(modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
         if (hasPermission) {
@@ -163,6 +169,26 @@ fun CameraScreen(onWordsCaptured: (List<String>) -> Unit) {
                 }
             }
         }
+    }
+}
+
+/**
+ * Hides the status and navigation bars for as long as this Composable is in
+ * the composition. The swipe-to-reveal behavior is preserved so the user can
+ * pull them back temporarily if needed.
+ */
+@Composable
+private fun HideSystemBarsWhileVisible() {
+    val view = LocalView.current
+    DisposableEffect(view) {
+        val window = (view.context as? Activity)?.window
+        val controller = window?.let { WindowInsetsControllerCompat(it, view) }
+        controller?.apply {
+            hide(WindowInsetsCompat.Type.systemBars())
+            systemBarsBehavior =
+                WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+        }
+        onDispose { controller?.show(WindowInsetsCompat.Type.systemBars()) }
     }
 }
 
