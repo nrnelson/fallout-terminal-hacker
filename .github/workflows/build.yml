@@ -21,6 +21,12 @@ jobs:
       - name: Cache Gradle
         uses: gradle/actions/setup-gradle@v4
 
+      - name: ktlint
+        run: ./gradlew ktlintCheck
+
+      - name: detekt
+        run: ./gradlew detekt
+
       - name: Test
         run: ./gradlew test
 

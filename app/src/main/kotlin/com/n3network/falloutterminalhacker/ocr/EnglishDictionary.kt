@@ -17,6 +17,10 @@ class EnglishDictionary private constructor(private val words: Set<String>) {
     val size: Int get() = words.size
 
     companion object {
+        // Slightly above the actual entry count so the HashSet doesn't rehash
+        // while we stream the wordlist in.
+        private const val INITIAL_CAPACITY = 320_000
+
         @Volatile private var instance: EnglishDictionary? = null
 
         fun get(context: Context): EnglishDictionary =
@@ -25,7 +29,7 @@ class EnglishDictionary private constructor(private val words: Set<String>) {
             }
 
         private fun load(context: Context): EnglishDictionary {
-            val set = HashSet<String>(320_000)
+            val set = HashSet<String>(INITIAL_CAPACITY)
             context.assets.open("wordlist.txt")
                 .bufferedReader()
                 .useLines { lines ->

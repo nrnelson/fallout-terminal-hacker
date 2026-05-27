@@ -3,6 +3,8 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.ktlint)
+    alias(libs.plugins.detekt)
 }
 
 android {
@@ -22,7 +24,7 @@ android {
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
+                "proguard-rules.pro",
             )
         }
     }
@@ -39,6 +41,21 @@ kotlin {
     compilerOptions {
         jvmTarget.set(JvmTarget.JVM_17)
     }
+}
+
+ktlint {
+    android.set(true)
+    filter {
+        exclude("**/generated/**")
+        exclude("**/build/**")
+    }
+}
+
+detekt {
+    config.setFrom("$projectDir/detekt.yml")
+    baseline = file("$projectDir/detekt-baseline.xml")
+    buildUponDefaultConfig = true
+    autoCorrect = false
 }
 
 dependencies {

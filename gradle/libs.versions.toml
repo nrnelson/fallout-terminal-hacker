@@ -9,6 +9,8 @@ cameraX = "1.6.1"
 mlkitText = "16.0.1"
 kotlinxCoroutines = "1.11.0"
 junit = "4.13.2"
+ktlint = "12.1.1"
+detekt = "1.23.7"
 
 [libraries]
 androidx-core-ktx              = { group = "androidx.core",              name = "core-ktx",                version.ref = "coreKtx" }
@@ -32,3 +34,5 @@ junit                          = { group = "junit",                      name = 
 [plugins]
 android-application = { id = "com.android.application",                     version.ref = "agp" }
 kotlin-compose      = { id = "org.jetbrains.kotlin.plugin.compose",         version.ref = "kotlin" }
+ktlint              = { id = "org.jlleitschuh.gradle.ktlint",               version.ref = "ktlint" }
+detekt              = { id = "io.gitlab.arturbosch.detekt",                 version.ref = "detekt" }

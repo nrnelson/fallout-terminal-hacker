@@ -1,0 +1,48 @@
+# Project-specific detekt overrides. Inherits the rest from detekt's defaults
+# via buildUponDefaultConfig=true in app/build.gradle.kts.
+
+style:
+  MagicNumber:
+    # Compose DSL is full of pixel/dp constants (16.dp, 12.sp, etc.). Treating
+    # every numeric literal in the UI layer as a magic number floods the report.
+    excludes:
+      - '**/ui/**'
+      - '**/*Test*.kt'
+  MaxLineLength:
+    maxLineLength: 120
+  ReturnCount:
+    # SolverState's add/editCandidate use a flat list of guard clauses, which
+    # reads more clearly than nesting them inside a single when/early return.
+    max: 6
+
+complexity:
+  LongMethod:
+    # Compose screens commonly bundle several local Composable children inside
+    # one parent function (Header + RecommendationCard + CandidateList + ...);
+    # 80 lines is too tight for that style.
+    excludes:
+      - '**/ui/**'
+
+naming:
+  FunctionNaming:
+    # @Composable functions are PascalCase by convention.
+    ignoreAnnotated:
+      - 'Composable'
+  TopLevelPropertyNaming:
+    # Two patterns coexist: PascalCase for Compose Savers / styles
+    # (SolverStateSaver, FalloutTypography) and SCREAMING_SNAKE for plain
+    # constants (OCR_MAX_LONG_SIDE_PX). Accept either.
+    constantPattern: '([A-Z][A-Z0-9_]*|[A-Z][A-Za-z0-9]*)'
+  MatchingDeclarationName:
+    excludes:
+      # HackerApp.kt declares both the Composable and the Screen sealed type.
+      - '**/HackerApp.kt'
+
+exceptions:
+  TooGenericExceptionCaught:
+    # Top-level error boundaries in camera/OCR catch broad on purpose — the
+    # CameraX and ML Kit APIs throw a variety of unrelated exceptions and the
+    # UI just needs to surface a single message and reset the spinner.
+    excludes:
+      - '**/ui/CameraScreen.kt'
+      - '**/camera/CameraView.kt'
