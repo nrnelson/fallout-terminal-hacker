@@ -47,6 +47,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
+import kotlin.coroutines.resume
 
 @Composable
 fun CameraScreen(onWordsCaptured: (List<String>) -> Unit) {
@@ -182,7 +183,7 @@ private suspend fun captureBitmap(
                     Bitmap.createBitmap(raw, 0, 0, raw.width, raw.height, m, true)
                 } else raw
                 image.close()
-                cont.resume(rotated) {}
+                cont.resume(rotated)
             } catch (e: Exception) {
                 image.close()
                 cont.resumeWith(Result.failure(e))
