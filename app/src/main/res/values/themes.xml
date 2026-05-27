@@ -1,7 +1,8 @@
 <resources>
-    <style name="Theme.FalloutTerminalHacker" parent="android:Theme.Material.NoActionBar">
-        <item name="android:statusBarColor">@android:color/black</item>
-        <item name="android:navigationBarColor">@android:color/black</item>
-        <item name="android:windowLightStatusBar">false</item>
-    </style>
+    <!--
+      System bar colors are handled at runtime via enableEdgeToEdge() in
+      MainActivity and statusBarColor/navigationBarColor are deprecated /
+      ignored on API 35+, so this style only needs the parent declaration.
+    -->
+    <style name="Theme.FalloutTerminalHacker" parent="android:Theme.Material.NoActionBar" />
 </resources>
