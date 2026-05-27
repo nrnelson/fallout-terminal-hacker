@@ -137,6 +137,7 @@ fun CameraScreen(onWordsCaptured: (List<String>) -> Unit) {
                             scope.launch {
                                 try {
                                     val bitmap = captureBitmap(capture, context)
+                                        .downscaleToLongSide(OCR_MAX_LONG_SIDE_PX)
                                     try {
                                         val dict = EnglishDictionary.get(context)
                                         val words = withContext(Dispatchers.Default) {
@@ -164,6 +165,27 @@ fun CameraScreen(onWordsCaptured: (List<String>) -> Unit) {
             }
         }
     }
+}
+
+/**
+ * Long-side cap (px) we feed into ML Kit text recognition. Modern phone cameras
+ * shoot ~4000 px on the long side; that's wasteful for terminal-text OCR and
+ * makes each scan slower and hungrier on memory. ~1600 keeps glyphs crisp.
+ */
+private const val OCR_MAX_LONG_SIDE_PX = 1600
+
+private fun Bitmap.downscaleToLongSide(maxPx: Int): Bitmap {
+    val longSide = maxOf(width, height)
+    if (longSide <= maxPx) return this
+    val scale = maxPx.toFloat() / longSide
+    val scaled = Bitmap.createScaledBitmap(
+        this,
+        (width * scale).toInt(),
+        (height * scale).toInt(),
+        true
+    )
+    if (scaled !== this) recycle()
+    return scaled
 }
 
 private suspend fun captureBitmap(
