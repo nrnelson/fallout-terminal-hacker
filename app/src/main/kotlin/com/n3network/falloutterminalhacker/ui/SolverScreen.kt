@@ -18,11 +18,8 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -121,36 +118,24 @@ fun SolverScreen(
             val canSubmit = selected != null &&
                 parsedLikeness != null && parsedLikeness in 0..state.wordLength
 
-            Button(
+            TerminalButton(
+                text = "SUBMIT GUESS",
                 onClick = {
-                    val word = selected ?: return@Button
-                    val k = parsedLikeness ?: return@Button
+                    val word = selected ?: return@TerminalButton
+                    val k = parsedLikeness ?: return@TerminalButton
                     state = state.submitGuess(word, k)
                 },
                 enabled = canSubmit,
-                modifier = Modifier.fillMaxWidth(),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    contentColor = Color.Black
-                ),
-                shape = RoundedCornerShape(4.dp)
-            ) {
-                Text("SUBMIT GUESS", style = MaterialTheme.typography.titleMedium)
-            }
+                modifier = Modifier.fillMaxWidth()
+            )
         } else {
             ResultBlock(state)
             Spacer(Modifier.height(12.dp))
-            Button(
+            TerminalButton(
+                text = "NEW TERMINAL",
                 onClick = onRestart,
-                modifier = Modifier.fillMaxWidth(),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    contentColor = Color.Black
-                ),
-                shape = RoundedCornerShape(4.dp)
-            ) {
-                Text("NEW TERMINAL", style = MaterialTheme.typography.titleMedium)
-            }
+                modifier = Modifier.fillMaxWidth()
+            )
         }
 
         if (state.history.isNotEmpty()) {
@@ -304,13 +289,7 @@ private fun LikenessInputRow(
             modifier = Modifier.width(80.dp),
             singleLine = true,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-            colors = OutlinedTextFieldDefaults.colors(
-                focusedTextColor = MaterialTheme.colorScheme.primary,
-                unfocusedTextColor = MaterialTheme.colorScheme.primary,
-                focusedBorderColor = MaterialTheme.colorScheme.primary,
-                unfocusedBorderColor = MaterialTheme.colorScheme.primary,
-                cursorColor = MaterialTheme.colorScheme.primary
-            )
+            colors = terminalFieldColors()
         )
         Spacer(Modifier.width(8.dp))
         Text(
@@ -392,13 +371,7 @@ private fun WordEntryDialog(
                             color = MaterialTheme.colorScheme.primary
                         )
                     },
-                    colors = OutlinedTextFieldDefaults.colors(
-                        focusedTextColor = MaterialTheme.colorScheme.primary,
-                        unfocusedTextColor = MaterialTheme.colorScheme.primary,
-                        focusedBorderColor = MaterialTheme.colorScheme.primary,
-                        unfocusedBorderColor = MaterialTheme.colorScheme.primary,
-                        cursorColor = MaterialTheme.colorScheme.primary
-                    )
+                    colors = terminalFieldColors()
                 )
             }
         },

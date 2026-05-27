@@ -20,9 +20,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -125,9 +122,10 @@ fun CameraScreen(onWordsCaptured: (List<String>) -> Unit) {
                         style = MaterialTheme.typography.labelLarge
                     )
                 } else {
-                    Button(
+                    TerminalButton(
+                        text = "SCAN TERMINAL",
                         onClick = {
-                            val capture = imageCapture ?: return@Button
+                            val capture = imageCapture ?: return@TerminalButton
                             isProcessing = true
                             status = null
                             scope.launch {
@@ -153,15 +151,8 @@ fun CameraScreen(onWordsCaptured: (List<String>) -> Unit) {
                                 }
                             }
                         },
-                        enabled = imageCapture != null && hasPermission,
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = MaterialTheme.colorScheme.primary,
-                            contentColor = Color.Black
-                        ),
-                        shape = RoundedCornerShape(4.dp)
-                    ) {
-                        Text("SCAN TERMINAL", style = MaterialTheme.typography.titleMedium)
-                    }
+                        enabled = imageCapture != null && hasPermission
+                    )
                 }
             }
         }
