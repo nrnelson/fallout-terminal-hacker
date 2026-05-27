@@ -28,6 +28,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -46,7 +47,12 @@ fun SolverScreen(
     initialCandidates: List<String>,
     onRestart: () -> Unit
 ) {
-    var state by remember { mutableStateOf(SolverState.start(initialCandidates)) }
+    var state by rememberSaveable(stateSaver = SolverStateSaver) {
+        mutableStateOf(SolverState.start(initialCandidates))
+    }
+    // selected/likenessInput intentionally use remember (not rememberSaveable):
+    // the LaunchedEffect below resets them whenever state changes, so they're
+    // effectively derived from state.
     var selected by remember { mutableStateOf(state.recommendation) }
     var likenessInput by remember { mutableStateOf("") }
     var editingWord by remember { mutableStateOf<String?>(null) }
