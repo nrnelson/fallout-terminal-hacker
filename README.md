@@ -15,10 +15,10 @@ You can tap **DEL** next to any candidate if OCR picked up a word that isn't rea
 
 ## Stack
 
-- Kotlin 2.0.20, Jetpack Compose, Material 3
-- CameraX 1.3.4
+- Kotlin 2.3.21, Jetpack Compose, Material 3
+- CameraX 1.6.1
 - ML Kit Text Recognition 16.0.1 (fully on-device)
-- minSdk 26 (Android 8.0), targetSdk 34
+- minSdk 26 (Android 8.0), targetSdk 37
 
 ## Build
 
