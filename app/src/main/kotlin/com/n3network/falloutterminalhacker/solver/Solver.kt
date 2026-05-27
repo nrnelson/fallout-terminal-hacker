@@ -42,17 +42,13 @@ object Solver {
     fun bestGuess(candidates: List<String>): String {
         require(candidates.isNotEmpty()) { "Need at least one candidate" }
         if (candidates.size == 1) return candidates.first()
-        return candidates
-            .map { guess ->
-                val worst = candidates
-                    .groupingBy { likeness(guess, it) }
-                    .eachCount()
-                    .values
-                    .max()
-                guess to worst
-            }
-            .sortedWith(compareBy({ it.second }, { it.first }))
-            .first()
-            .first
+        return candidates.minWith(compareBy({ worstBucket(it, candidates) }, { it }))
     }
+
+    private fun worstBucket(guess: String, candidates: List<String>): Int =
+        candidates
+            .groupingBy { likeness(guess, it) }
+            .eachCount()
+            .values
+            .max()
 }

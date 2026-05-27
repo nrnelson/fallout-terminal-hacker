@@ -43,6 +43,15 @@ class WordExtractorTest {
     }
 
     @Test
+    fun `ties on length count prefer the longer length`() {
+        // Two 5-letter and two 6-letter words — tied at 2 each. The longer
+        // length should win so we don't fall back to OCR header chrome
+        // that happens to be short.
+        val ocr = "ROAST BREAD POLICY ENGINE"
+        assertEquals(setOf("POLICY", "ENGINE"), WordExtractor.extract(ocr).toSet())
+    }
+
+    @Test
     fun `picks the most common length when mixed`() {
         // Four 5-letter words, two 6-letter words -> keep 5-letter. M/H-free.
         val ocr = "ROAST BREAD TOAST CRUST BIGGER LONGER"

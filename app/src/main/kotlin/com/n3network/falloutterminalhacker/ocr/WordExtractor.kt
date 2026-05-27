@@ -47,7 +47,7 @@ object WordExtractor {
         val targetLength = words
             .groupingBy { it.length }
             .eachCount()
-            .maxBy { it.value }
+            .maxWith(compareBy({ it.value }, { it.key }))
             .key
 
         val atLength = words.filter { it.length == targetLength }.distinct()
