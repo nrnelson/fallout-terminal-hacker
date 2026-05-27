@@ -7,7 +7,7 @@ enum class SolverStatus { IN_PROGRESS, SOLVED, FAILED }
 data class SolverState(
     val allCandidates: List<String>,
     val remaining: List<String>,
-    val attemptsLeft: Int = 4,
+    val attemptsLeft: Int = MAX_ATTEMPTS,
     val history: List<Guess> = emptyList(),
     val status: SolverStatus = SolverStatus.IN_PROGRESS
 ) {
@@ -17,7 +17,7 @@ data class SolverState(
         get() = if (status == SolverStatus.IN_PROGRESS && remaining.isNotEmpty())
             Solver.bestGuess(remaining) else null
 
-    fun apply(word: String, likeness: Int): SolverState {
+    fun submitGuess(word: String, likeness: Int): SolverState {
         val newHistory = history + Guess(word, likeness)
         val newAttempts = attemptsLeft - 1
         return when {
@@ -64,6 +64,8 @@ data class SolverState(
     }
 
     companion object {
+        const val MAX_ATTEMPTS = 4
+
         fun start(candidates: List<String>): SolverState =
             SolverState(allCandidates = candidates, remaining = candidates)
     }

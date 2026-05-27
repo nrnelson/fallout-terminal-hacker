@@ -40,6 +40,9 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.n3network.falloutterminalhacker.solver.SolverState
 import com.n3network.falloutterminalhacker.solver.SolverStatus
+import com.n3network.falloutterminalhacker.ui.theme.PipBoyDarkGreen
+import com.n3network.falloutterminalhacker.ui.theme.PipBoyDialogGreen
+import com.n3network.falloutterminalhacker.ui.theme.PipBoyHighlightGreen
 
 @Composable
 fun SolverScreen(
@@ -122,7 +125,7 @@ fun SolverScreen(
                 onClick = {
                     val word = selected ?: return@Button
                     val k = parsedLikeness ?: return@Button
-                    state = state.apply(word, k)
+                    state = state.submitGuess(word, k)
                 },
                 enabled = canSubmit,
                 modifier = Modifier.fillMaxWidth(),
@@ -208,7 +211,7 @@ private fun Header(state: SolverState) {
             color = MaterialTheme.colorScheme.primary
         )
         Text(
-            "ATTEMPTS: ${state.attemptsLeft}/4",
+            "ATTEMPTS: ${state.attemptsLeft}/${SolverState.MAX_ATTEMPTS}",
             style = MaterialTheme.typography.titleMedium,
             color = MaterialTheme.colorScheme.primary
         )
@@ -219,7 +222,7 @@ private fun Header(state: SolverState) {
 private fun RecommendationCard(word: String?, wordLength: Int, remainingCount: Int) {
     Surface(
         modifier = Modifier.fillMaxWidth(),
-        color = Color(0xFF002200),
+        color = PipBoyDarkGreen,
         border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary),
         shape = RoundedCornerShape(4.dp)
     ) {
@@ -248,7 +251,7 @@ private fun WordRow(
 ) {
     Surface(
         modifier = Modifier.fillMaxWidth().padding(vertical = 2.dp),
-        color = if (selected) Color(0xFF003300) else Color.Transparent,
+        color = if (selected) PipBoyHighlightGreen else Color.Transparent,
         onClick = onClick
     ) {
         Row(
@@ -416,7 +419,7 @@ private fun WordEntryDialog(
                 Text("CANCEL", color = MaterialTheme.colorScheme.primary)
             }
         },
-        containerColor = Color(0xFF001100),
+        containerColor = PipBoyDialogGreen,
         textContentColor = MaterialTheme.colorScheme.primary,
         titleContentColor = MaterialTheme.colorScheme.primary
     )

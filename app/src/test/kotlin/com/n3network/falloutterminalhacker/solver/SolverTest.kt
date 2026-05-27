@@ -57,7 +57,7 @@ class SolverTest {
     @Test
     fun `state solves when likeness equals wordLength`() {
         val state = SolverState.start(listOf("HOUSE", "MOUSE", "HORSE"))
-        val result = state.apply("HOUSE", 5)
+        val result = state.submitGuess("HOUSE", 5)
         assertEquals(SolverStatus.SOLVED, result.status)
         assertEquals(listOf("HOUSE"), result.remaining)
         assertEquals(3, result.attemptsLeft)
@@ -70,7 +70,7 @@ class SolverTest {
         var state = SolverState.start(listOf("AAAAA", "BBBBB", "CCCCC", "DDDDD"))
         repeat(4) {
             val guess = state.remaining.first()
-            state = state.apply(guess, 0) // pretend zero likeness every time
+            state = state.submitGuess(guess, 0) // pretend zero likeness every time
         }
         assertEquals(SolverStatus.FAILED, state.status)
         assertEquals(0, state.attemptsLeft)
@@ -79,7 +79,7 @@ class SolverTest {
     @Test
     fun `state narrows remaining candidates after each guess`() {
         val cands = listOf("HOUSE", "MOUSE", "MOOSE", "HORSE")
-        val state = SolverState.start(cands).apply("HOUSE", 4)
+        val state = SolverState.start(cands).submitGuess("HOUSE", 4)
         assertEquals(setOf("MOUSE", "HORSE"), state.remaining.toSet())
         assertEquals(SolverStatus.IN_PROGRESS, state.status)
         assertEquals(3, state.attemptsLeft)

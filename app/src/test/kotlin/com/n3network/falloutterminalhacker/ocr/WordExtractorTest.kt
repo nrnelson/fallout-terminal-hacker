@@ -1,6 +1,7 @@
 package com.n3network.falloutterminalhacker.ocr
 
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class WordExtractorTest {
@@ -75,9 +76,9 @@ class WordExtractorTest {
         // "HUMHM" has 4 M/H positions (0,2,3,4) -> 2^4 = 16 variants
         val result = WordExtractor.extract("HUMHM").toSet()
         assertEquals(16, result.size)
-        assertEquals(true, "HUMHM" in result)
-        assertEquals(true, "MUHHH" in result)
-        assertEquals(true, "MUMMM" in result)
+        assertTrue("HUMHM" in result)
+        assertTrue("MUHHH" in result)
+        assertTrue("MUMMM" in result)
     }
 
     @Test

@@ -9,7 +9,6 @@ import androidx.compose.ui.unit.sp
 private val mono = TextStyle(fontFamily = FontFamily.Monospace, fontWeight = FontWeight.Normal)
 
 val FalloutTypography = Typography(
-    displayLarge   = mono.copy(fontSize = 48.sp),
     headlineMedium = mono.copy(fontSize = 28.sp, fontWeight = FontWeight.Bold),
     titleMedium    = mono.copy(fontSize = 18.sp, fontWeight = FontWeight.Bold),
     bodyLarge      = mono.copy(fontSize = 16.sp),
