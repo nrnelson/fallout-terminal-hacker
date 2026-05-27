@@ -1,5 +1,6 @@
 package com.n3network.falloutterminalhacker.camera
 
+import android.util.Log
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageCapture
 import androidx.camera.core.Preview
@@ -12,6 +13,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.compose.LocalLifecycleOwner
+
+private const val TAG = "CameraPreview"
 
 /**
  * Renders a CameraX live preview and yields an [ImageCapture] use case to the
@@ -48,7 +51,7 @@ fun CameraPreview(
                     )
                     onImageCaptureReady(imageCapture)
                 } catch (e: Exception) {
-                    e.printStackTrace()
+                    Log.e(TAG, "Failed to bind camera use cases", e)
                 }
             }, ContextCompat.getMainExecutor(ctx))
             previewView

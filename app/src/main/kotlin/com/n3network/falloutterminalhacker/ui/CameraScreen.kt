@@ -24,6 +24,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -68,6 +69,11 @@ fun CameraScreen(onWordsCaptured: (List<String>) -> Unit) {
     var imageCapture by remember { mutableStateOf<ImageCapture?>(null) }
     var isProcessing by remember { mutableStateOf(false) }
     var status by remember { mutableStateOf<String?>(null) }
+
+    val recognizer = remember { TextRecognizer() }
+    DisposableEffect(recognizer) {
+        onDispose { recognizer.close() }
+    }
 
     Box(modifier = Modifier.fillMaxSize().background(Color.Black)) {
         if (hasPermission) {
@@ -131,18 +137,19 @@ fun CameraScreen(onWordsCaptured: (List<String>) -> Unit) {
                             scope.launch {
                                 try {
                                     val bitmap = captureBitmap(capture, context)
-                                    val dict = EnglishDictionary.get(context)
-                                    val words = withContext(Dispatchers.Default) {
-                                        val recognizer = TextRecognizer()
-                                        val raw = recognizer.recognize(bitmap)
-                                        val extracted = WordExtractor.extract(raw, dict::contains)
-                                        recognizer.close()
-                                        extracted
-                                    }
-                                    when {
-                                        words.size < 2 ->
-                                            status = "Found only ${words.size} words. Retry."
-                                        else -> onWordsCaptured(words)
+                                    try {
+                                        val dict = EnglishDictionary.get(context)
+                                        val words = withContext(Dispatchers.Default) {
+                                            val raw = recognizer.recognize(bitmap)
+                                            WordExtractor.extract(raw, dict::contains)
+                                        }
+                                        when {
+                                            words.size < 2 ->
+                                                status = "Found only ${words.size} words. Retry."
+                                            else -> onWordsCaptured(words)
+                                        }
+                                    } finally {
+                                        bitmap.recycle()
                                     }
                                 } catch (e: Exception) {
                                     status = "Capture failed: ${e.message}"
@@ -172,12 +179,13 @@ private suspend fun captureBitmap(
                 val rotated = if (rotation != 0) {
                     val m = Matrix().apply { postRotate(rotation.toFloat()) }
                     Bitmap.createBitmap(raw, 0, 0, raw.width, raw.height, m, true)
+                        .also { raw.recycle() }
                 } else raw
-                image.close()
                 cont.resume(rotated)
             } catch (e: Exception) {
-                image.close()
                 cont.resumeWith(Result.failure(e))
+            } finally {
+                image.close()
             }
         }
 
